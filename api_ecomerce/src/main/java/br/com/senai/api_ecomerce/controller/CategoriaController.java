@@ -1,18 +1,30 @@
 package br.com.senai.api_ecomerce.controller;
 
+import br.com.senai.api_ecomerce.categoria.Categoria;
+import br.com.senai.api_ecomerce.categoria.CategoriaRepository;
 import br.com.senai.api_ecomerce.categoria.DadosCadastroCategoria;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("categoria")
+@RequestMapping("categorias")
 public class CategoriaController {
 
+    @Autowired
+    private CategoriaRepository repository;
+
     @PostMapping
-    public String cadastrarCategoria(@RequestBody DadosCadastroCategoria dados) {
-        return "Categoria cadastrada com sucesso";
+    @Transactional
+    public void cadastrarCategoria(@RequestBody @Valid DadosCadastroCategoria dados) {
+        repository.save(new Categoria(dados));
     }
 
+    @GetMapping
+    public List<Categoria> listarCategorias() {
+        return repository.findAll();
+    }
 }
